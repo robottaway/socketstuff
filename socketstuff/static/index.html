@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"> 
+<head>
+  <link href="/static/favicon.ico" rel="icon" type="image/x-icon" />
+  <script src="js/jquery-1.6.4.js"></script>
+  <script src="js/jquery.flot.js"></script>
+  <script src="web-socket-js/swfobject.js"></script>
+  <script src="js/socket.io.js"></script>
+  <script>WEB_SOCKET_SWF_LOCATION = 'web-socket-js/WebSocketMain.swf';</script>
+</head>
+<body>
+    <script>
+    var socket = null;
+    $(document).ready(function() {
+        //var d1 = [[1, 2], [2, 4], [3, 0], [4, 5]];
+        var d1 = [];
+        socket = new io.Socket('us.corstest', {
+            rememberTransport: false, 
+        });
+        socket.on('connect', function() {
+            console.log("Connected event received");
+            socket.send({type: "connect", userid: 123});
+        });
+        socket.on('message', function(obj) {
+            if (obj.type == "showdata") {
+                var another = [d1.length, obj.point];
+                d1.push(another);
+                $.plot($('#graph'), [{label: "Rands", data: d1}]);    
+            }
+            if (obj.type == "jaberwocky") {
+                console.log(obj.word);
+            }
+            else {
+                console.log("Unhandled Message:", JSON.stringify(obj));
+            }
+        });
+        socket.on('error', function(obj) {
+            console.log("Error", JSON.stringify(obj));
+        });
+        socket.on('disconnect', function() {
+            console.log("Disconnected");
+        });
+        console.log("Connecting...");
+        socket.connect();
+        $.plot($('#graph'), [{label:"Rands", data:d1}], {width:200, height:200});
+    });
+</script>
+<div id="graph" style="width: 80%; height: 600px;"></div>
+</body>
+</html>
