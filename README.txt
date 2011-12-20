@@ -43,6 +43,10 @@ export CFLAGS=-I/opt/local/include
 
 Which'll let gevent point to the header files when building.
 
+User Mac Ports to install redis:
+
+sudo port install redis
+
 
 On Windows
 -----------
