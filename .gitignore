@@ -1,4 +1,5 @@
 target
+*egg-info
 bin
 *un~
 *swp
